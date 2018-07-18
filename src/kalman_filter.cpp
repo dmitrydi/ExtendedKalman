@@ -52,8 +52,9 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   /**
     * update the state by using Extended Kalman Filter equations
   */
+  Tools tools;
   MatrixXd Hj = tools.CalculateJacobian(x_);
-  VextorXd z_pred = tools.Calculate_h(x_);
+  VectorXd z_pred = tools.Calculate_h(x_);
   VectorXd y = z - z_pred;
   MatrixXd Hjt = Hj.transpose();
   MatrixXd S = Hj * P_ * Hjt + R_;

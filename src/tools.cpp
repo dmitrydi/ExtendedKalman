@@ -22,8 +22,8 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
 
 	VectorXd rmse(4);
 	rmse << 0,0,0,0;
-	for (long i = 0, i < data_size, i++) {
-		VectorXd d = estimations[i] - groundtruth[i];
+	for (long i = 0; i < data_size; i++) {
+		VectorXd d = estimations[i] - ground_truth[i];
 		d = d.array()*d.array();
 		rmse += d;
   }
@@ -53,26 +53,28 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
   return Jac;
 }
 
-VectroXd Tools::Calculate_h(const VectroXd& x_state) {
+VectorXd Tools::Calculate_h(const VectorXd& x_state) {
 	 /**
     * Calculate radar measurement function h(x) here.
   */
-	const double pi = 3.1415926535897932384626433832795
+	const double pi = 3.1415926535897932384626433832795;
 	float px = x_state(0);
 	float py = x_state(1);
 	float vx = x_state(2);
 	float vy = x_state(3);
 	float rho = sqrt(px*px+py*py);
+	float phi;
+	VectorXd h(4);
 	if (rho == 0.) {
-		VectorXd h(0.,0.,0.);
+		h << 0,0,0;
 	} else {
 			if(px == 0.) {
-				float phi = 0.5*pi;
+				phi = 0.5*pi;
 			} else {
 				phi = atan(py/px);
 			}
 			float rhodot = (px*vx+py*vy)/rho;
-			VectorXd h(rho, phi, rhodot);
+			h << rho, phi, rhodot;
 	}
 	return h;
 }
