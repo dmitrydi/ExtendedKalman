@@ -2,6 +2,8 @@
 #define TOOLS_H_
 #include <vector>
 #include "Eigen/Dense"
+#include <cmath>
+#include <stdexcept>
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -28,6 +30,9 @@ public:
   * A helper method to calculate Jacobians.
   */
   MatrixXd CalculateJacobian(const VectorXd& x_state);
+
+  // A helper method to compute measurement function h(x) for radar
+  VectorXd Calculate_h(const VectorXd& x_state);
 
 };
 
