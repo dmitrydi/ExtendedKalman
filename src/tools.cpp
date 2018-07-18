@@ -20,7 +20,8 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
   	throw invalid_argument("number of estimations is uneaqual to number of groundtruth or zero length data");
   }
 
-	VectorXd rmse(4);
+	VectorXd rmse;
+	rmse = VectorXd(4);
 	rmse << 0,0,0,0;
 	for (long i = 0; i < data_size; i++) {
 		VectorXd d = estimations[i] - ground_truth[i];
@@ -64,7 +65,8 @@ VectorXd Tools::Calculate_h(const VectorXd& x_state) {
 	float vy = x_state(3);
 	float rho = sqrt(px*px+py*py);
 	float phi;
-	VectorXd h(4);
+	VectorXd h;
+	h = VectorXd(3);
 	if (rho == 0.) {
 		h << 0,0,0;
 	} else {

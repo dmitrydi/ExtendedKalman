@@ -20,7 +20,7 @@ FusionEKF::FusionEKF() {
   R_laser_ = MatrixXd(2, 2);
   R_radar_ = MatrixXd(3, 3);
   H_laser_ = MatrixXd(2, 4);
-  
+
   // initial state covariance matrix
   Pinit_ = MatrixXd(4,4);
   Pinit_ << 1,0,0,0,
@@ -125,10 +125,10 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
      * Use the sensor type to perform the update step.
      * Update the state and covariance matrices.
    */
-
+  VectorXd z;
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
     // Radar updates
-    VectorXd z(3);
+    z = VectorXd(3);
     Tools tools;
     z << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], measurement_pack.raw_measurements_[3];
     //Hj_ = tools.CalculateJacobian(ekf_.x_);
@@ -137,7 +137,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     ekf_.UpdateEKF(z);
   } else {
     // Laser updates
-    VectorXd z(2);
+    z = VectorXd(2);
     z << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1];
     ekf_.H_ = H_laser_;
     ekf_.R_ = R_laser_;
