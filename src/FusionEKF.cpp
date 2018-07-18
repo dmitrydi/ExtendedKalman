@@ -20,7 +20,13 @@ FusionEKF::FusionEKF() {
   R_laser_ = MatrixXd(2, 2);
   R_radar_ = MatrixXd(3, 3);
   H_laser_ = MatrixXd(2, 4);
-  Hj_ = MatrixXd(3, 4);
+  
+  // initial state covariance matrix
+  Pinit_ = MatrixXd(4,4);
+  Pinit_ << 1,0,0,0,
+           0,1,0,0,
+           0,0,1000,0,
+           0,0,0,1000;
 
   //measurement covariance matrix - laser
   R_laser_ << 0.0225, 0,
@@ -30,6 +36,8 @@ FusionEKF::FusionEKF() {
   R_radar_ << 0.09, 0, 0,
         0, 0.0009, 0,
         0, 0, 0.09;
+
+  //
 
   /**
     * Finish initializing the FusionEKF.
@@ -83,6 +91,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     }
     previous_timestamp_ = measurement_pack.timestamp_;
     // done initializing, no need to predict or update
+    ekf_.P_ = Pinit_;
     is_initialized_ = true;
     return;
   }
@@ -120,12 +129,18 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
     // Radar updates
     VectorXd z(3);
+    Tools tools;
     z << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], measurement_pack.raw_measurements_[3];
+    //Hj_ = tools.CalculateJacobian(ekf_.x_);
+    //ekf_.H_ = Hj_;
+    ekf_.R_ = R_radar_;
     ekf_.UpdateEKF(z);
   } else {
     // Laser updates
     VectorXd z(2);
     z << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1];
+    ekf_.H_ = H_laser_;
+    ekf_.R_ = R_laser_;
     ekf_.Update(z);
   }
 

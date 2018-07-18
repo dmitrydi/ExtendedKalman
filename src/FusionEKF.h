@@ -44,7 +44,7 @@ private:
   Eigen::MatrixXd R_laser_;
   Eigen::MatrixXd R_radar_;
   Eigen::MatrixXd H_laser_;
-  Eigen::MatrixXd Hj_;
+  Eigen::MatrixXd Pinit_;
   // noise values
   float noise_ax, noise_ay;
 };
