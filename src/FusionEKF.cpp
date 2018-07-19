@@ -78,13 +78,14 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     ekf_.x_ = VectorXd(4);
 
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
-      float rho, phi, px, py;
+      float rho, phi, px, py, vx, vy;
       rho = measurement_pack.raw_measurements_[0];
       phi = measurement_pack.raw_measurements_[1];
-      float tf = tan(phi);
-      px = rho/sqrt(1 + tf*tf);
-      py = px*tf;
-      ekf_.x_ << px, py, 0, 0;
+      px = rho*cos(phi);
+      py = rho*sin(phi);
+      vx = 0;
+      vy = 0;
+      ekf_.x_ << px, py, vx, vy;
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
       ekf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;

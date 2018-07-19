@@ -33,12 +33,17 @@ void KalmanFilter::Update(const VectorXd &z) {
   /**
     * update the state by using Kalman Filter equations
   */
+  const double pi = 3.1415926535897932384626433832795;
   VectorXd z_pred = H_ * x_;
+  while (z_pred(1) - z(1) > 0.5*pi)
+    z_pred(1) = z_pred(1) - pi;
+  while (z(1) - z_pred(1) > 0.5*pi)
+    z_pred(1) = z_pred(1) + pi;
   VectorXd y = z - z_pred;
   MatrixXd Ht = H_.transpose();
-  MatrixXd S = H_ * P_ * Ht + R_;
-  MatrixXd Si = S.inverse();
   MatrixXd PHt = P_ * Ht;
+  MatrixXd S = H_ * PHt + R_;
+  MatrixXd Si = S.inverse();
   MatrixXd K = PHt * Si;
 
   //new estimate
@@ -52,14 +57,19 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   /**
     * update the state by using Extended Kalman Filter equations
   */
+  const double pi = 3.1415926535897932384626433832795;
   Tools tools;
   VectorXd z_pred = tools.Calculate_h(x_);
   H_ = tools.CalculateJacobian(x_);
+  while (z_pred(1) - z(1) > 0.5*pi)
+    z_pred(1) = z_pred(1) - pi;
+  while (z(1) - z_pred(1) > 0.5*pi)
+    z_pred(1) = z_pred(1) + pi;
   VectorXd y = z - z_pred;
   MatrixXd Ht = H_.transpose();
-  MatrixXd S = H_ * P_ * Ht + R_;
-  MatrixXd Si = S.inverse();
   MatrixXd PHt = P_ * Ht;
+  MatrixXd S = H_ * PHt + R_;
+  MatrixXd Si = S.inverse();
   MatrixXd K = PHt * Si;
 
   //new estimate
